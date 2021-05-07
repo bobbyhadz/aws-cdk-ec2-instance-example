@@ -7,6 +7,7 @@ export class CdkStarterStack extends cdk.Stack {
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+    // 👇 create VPC in which we'll launch the Instance
     const vpc = new ec2.Vpc(this, 'my-cdk-vpc', {
       cidr: '10.0.0.0/16',
       natGateways: 0,
@@ -15,6 +16,7 @@ export class CdkStarterStack extends cdk.Stack {
       ],
     });
 
+    // 👇 create Security Group for the Instance
     const webserverSG = new ec2.SecurityGroup(this, 'webserver-sg', {
       vpc,
       allowAllOutbound: true,
@@ -38,6 +40,7 @@ export class CdkStarterStack extends cdk.Stack {
       'allow HTTPS traffic from anywhere',
     );
 
+    // 👇 create a Role for the EC2 Instance
     const webserverRole = new iam.Role(this, 'webserver-role', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
@@ -45,6 +48,7 @@ export class CdkStarterStack extends cdk.Stack {
       ],
     });
 
+    // 👇 create the EC2 Instance
     const ec2Instance = new ec2.Instance(this, 'ec2-instance', {
       vpc,
       vpcSubnets: {
@@ -62,7 +66,9 @@ export class CdkStarterStack extends cdk.Stack {
       keyName: 'ec2-key-pair',
     });
 
+    // 👇 load contents of script
     const userDataScript = readFileSync('./lib/user-data.sh', 'utf8');
+    // 👇 add the User Data script to the Instance
     ec2Instance.addUserData(userDataScript);
   }
 }
