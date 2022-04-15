@@ -3,6 +3,8 @@
 A repository for an article on
 [bobbyhadz.com](https://bobbyhadz.com/blog/aws-cdk-ec2-instance-example)
 
+> If you use CDK v1, switch to the cdk-v1 branch
+
 ## How to Use
 
 1. Clone the repository
@@ -18,7 +20,7 @@ npm install
 4. Create the CDK stack
 
 ```bash
-npx cdk deploy
+npx aws-cdk deploy
 ```
 
 5. Open the AWS CloudFormation Console and the stack should be created in your
@@ -30,5 +32,5 @@ npx cdk deploy
 7. Cleanup
 
 ```bash
-npx cdk destroy
+npx aws-cdk destroy
 ```
