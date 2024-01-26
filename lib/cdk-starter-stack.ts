@@ -9,7 +9,7 @@ export class CdkStarterStack extends cdk.Stack {
 
     // 👇 create VPC in which we'll launch the Instance
     const vpc = new ec2.Vpc(this, 'my-cdk-vpc', {
-      cidr: '10.0.0.0/16',
+      ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
       natGateways: 0,
       subnetConfiguration: [
         {name: 'public', cidrMask: 24, subnetType: ec2.SubnetType.PUBLIC},
@@ -48,6 +48,13 @@ export class CdkStarterStack extends cdk.Stack {
       ],
     });
 
+    // 👇️ Importing your SSH key
+    const keyPair = ec2.KeyPair.fromKeyPairName(
+      this,
+      'key-pair',
+      'ec2-key-pair',
+    );
+
     // 👇 create the EC2 Instance
     const ec2Instance = new ec2.Instance(this, 'ec2-instance', {
       vpc,
@@ -63,7 +70,7 @@ export class CdkStarterStack extends cdk.Stack {
       machineImage: new ec2.AmazonLinuxImage({
         generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2,
       }),
-      keyName: 'ec2-key-pair',
+      keyPair,
     });
 
     // 👇 load contents of script
